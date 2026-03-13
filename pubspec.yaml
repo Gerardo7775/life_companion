@@ -1,0 +1,54 @@
+name: life_companion
+description: "Life Companion – Tu asistente de vida holístico y adaptativo."
+publish_to: "none"
+version: 1.0.0+1
+
+environment:
+  sdk: ">=3.5.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # Base de datos local
+  sqflite: ^2.4.1
+  path: ^1.9.1
+  shared_preferences: ^2.3.5
+
+  # Arquitectura y estado
+  flutter_bloc: ^9.1.0
+  equatable: ^2.0.7
+  dartz: ^0.10.1
+
+  # Navegación
+  go_router: ^14.8.1
+
+  # Inyección de dependencias
+  get_it: ^8.0.3
+
+  # UI / UX
+  fl_chart: ^1.1.1
+  confetti: ^0.8.0
+  google_fonts: ^6.2.1
+  flutter_svg: ^2.0.14
+  intl: ^0.19.0
+  lottie: ^3.3.1
+  animations: ^2.0.11
+  shimmer: ^3.0.0
+
+  # Notificaciones locales
+  flutter_local_notifications: ^18.0.1
+  timezone: ^0.9.4
+
+
+  cupertino_icons: ^1.0.8
+  app_usage: ^4.0.1
+  permission_handler: ^12.0.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter:
+  uses-material-design: true
