@@ -8,10 +8,11 @@ class MainShell extends StatelessWidget {
 
   int _currentIndex(BuildContext context) {
     final location = GoRouterState.of(context).uri.path;
-    if (location.startsWith('/tasks')) return 1;
-    if (location.startsWith('/habits')) return 2;
+    if (location.startsWith('/tasks'))    return 1;
+    if (location.startsWith('/habits'))   return 2;
     if (location.startsWith('/finances')) return 3;
-    if (location.startsWith('/goals')) return 4;
+    if (location.startsWith('/goals'))    return 4;
+    if (location.startsWith('/settings')) return 5;
     return 0;
   }
 
@@ -65,19 +66,19 @@ class MainShell extends StatelessWidget {
                 icon: Icon(Icons.flag_rounded),
                 label: 'Metas',
               ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.settings_rounded),
+                label: 'Ajustes',
+              ),
             ],
             onTap: (i) {
               switch (i) {
-                case 0:
-                  context.go('/');
-                case 1:
-                  context.go('/tasks');
-                case 2:
-                  context.go('/habits');
-                case 3:
-                  context.go('/finances');
-                case 4:
-                  context.go('/goals');
+                case 0: context.go('/');
+                case 1: context.go('/tasks');
+                case 2: context.go('/habits');
+                case 3: context.go('/finances');
+                case 4: context.go('/goals');
+                case 5: context.go('/settings');
               }
             },
           ),

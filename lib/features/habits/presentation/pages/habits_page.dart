@@ -83,6 +83,7 @@ class _HabitsPageState extends State<HabitsPage> {
                           onLog: () => ctx.read<HabitBloc>().add(
                             LogHabitEvent(habits[i].id!),
                           ),
+                          onEdit: () => _showHabitForm(ctx, existingHabit: habits[i]),
                           onDelete: () => ctx.read<HabitBloc>().add(
                             DeleteHabitEvent(habits[i].id!),
                           ),
@@ -174,12 +175,19 @@ class _HabitsPageState extends State<HabitsPage> {
     ),
   );
 
-  void _showHabitForm(BuildContext ctx) {
-    final nameCtrl = TextEditingController();
-    final unitCtrl = TextEditingController(text: 'vez');
-    double target = 1;
-    String timeOfDay = 'anytime';
+  void _showHabitForm(BuildContext ctx, {HabitEntity? existingHabit}) {
+    final nameCtrl = TextEditingController(text: existingHabit?.name ?? '');
+    final unitCtrl = TextEditingController(text: existingHabit?.unit ?? 'vez');
+    double target = existingHabit?.targetValue ?? 1;
+    String timeOfDay = existingHabit?.timeOfDay ?? 'anytime';
     TimeOfDay? reminderTime;
+
+    if (existingHabit?.reminderTime != null) {
+      final parts = existingHabit!.reminderTime!.split(':');
+      if (parts.length == 2) {
+        reminderTime = TimeOfDay(hour: int.tryParse(parts[0]) ?? 8, minute: int.parse(parts[1]));
+      }
+    }
 
     showModalBottomSheet(
       context: ctx,
@@ -212,7 +220,7 @@ class _HabitsPageState extends State<HabitsPage> {
               ),
               const SizedBox(height: 16),
               Text(
-                'Nuevo Hábito',
+                existingHabit != null ? 'Editar Hábito' : 'Nuevo Hábito',
                 style: Theme.of(ctx).textTheme.headlineSmall,
               ),
               const SizedBox(height: 16),
@@ -346,22 +354,26 @@ class _HabitsPageState extends State<HabitsPage> {
                       formattedReminder = '${reminderTime!.hour.toString().padLeft(2, '0')}:${reminderTime!.minute.toString().padLeft(2, '0')}';
                     }
 
-                    ctx.read<HabitBloc>().add(
-                      CreateHabitEvent(
-                        HabitEntity(
-                          name: nameCtrl.text.trim(),
-                          targetValue: target,
-                          unit: unitCtrl.text.trim().isEmpty
-                              ? 'vez'
-                              : unitCtrl.text.trim(),
-                          timeOfDay: timeOfDay,
-                          reminderTime: formattedReminder,
-                        ),
-                      ),
+                    final newHabit = HabitEntity(
+                      id: existingHabit?.id,
+                      name: nameCtrl.text.trim(),
+                      targetValue: target,
+                      categoryColor: existingHabit?.categoryColor,
+                      unit: unitCtrl.text.trim().isEmpty
+                          ? 'vez'
+                          : unitCtrl.text.trim(),
+                      timeOfDay: timeOfDay,
+                      reminderTime: formattedReminder,
                     );
+
+                    if (existingHabit != null) {
+                      ctx.read<HabitBloc>().add(UpdateHabitEvent(newHabit));
+                    } else {
+                      ctx.read<HabitBloc>().add(CreateHabitEvent(newHabit));
+                    }
                     Navigator.pop(bsCtx);
                   },
-                  child: const Text('Crear Hábito'),
+                  child: Text(existingHabit != null ? 'Guardar Cambios' : 'Crear Hábito'),
                 ),
               ),
             ],
@@ -376,10 +388,12 @@ class _HabitsPageState extends State<HabitsPage> {
 class _HabitCard extends StatelessWidget {
   final HabitEntity habit;
   final VoidCallback onLog;
+  final VoidCallback onEdit;
   final VoidCallback onDelete;
   const _HabitCard({
     required this.habit,
     required this.onLog,
+    required this.onEdit,
     required this.onDelete,
   });
 
@@ -478,8 +492,15 @@ class _HabitCard extends StatelessWidget {
             ),
           ),
           IconButton(
-            icon: const Icon(Icons.delete_outline_rounded, size: 20),
+            icon: const Icon(Icons.edit_rounded, size: 20),
             color: AppColors.textHint,
+            onPressed: onEdit,
+            constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+            padding: EdgeInsets.zero,
+          ),
+          IconButton(
+            icon: const Icon(Icons.delete_outline_rounded, size: 20),
+            color: AppColors.error.withValues(alpha: 0.8),
             onPressed: onDelete,
             constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
             padding: EdgeInsets.zero,

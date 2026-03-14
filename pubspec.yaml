@@ -44,6 +44,7 @@ dependencies:
   cupertino_icons: ^1.0.8
   app_usage: ^4.0.1
   permission_handler: ^12.0.1
+  flutter_timezone: ^5.0.1
 
 dev_dependencies:
   flutter_test:

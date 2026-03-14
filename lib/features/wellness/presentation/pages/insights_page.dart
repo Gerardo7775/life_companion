@@ -5,6 +5,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:app_usage/app_usage.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/widgets/glass_card.dart';
+import '../../../../core/widgets/safe_pop_scope.dart';
 import '../../../agenda/presentation/state/task_bloc.dart';
 import '../../../agenda/presentation/state/task_state.dart';
 import '../../../habits/presentation/state/habit_bloc.dart';
@@ -72,9 +73,11 @@ class _InsightsPageState extends State<InsightsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.bgDark,
-      appBar: AppBar(
+    return SafePopScope(
+      fallbackRoute: '/',
+      child: Scaffold(
+        backgroundColor: AppColors.bgDark,
+        appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
@@ -110,8 +113,9 @@ class _InsightsPageState extends State<InsightsPage> {
           ],
         ),
       ),
-    );
-  }
+    ),
+  );
+}
 
   Widget _buildProductivityCard() {
     return BlocBuilder<TaskBloc, TaskState>(
@@ -298,7 +302,27 @@ class _InsightsPageState extends State<InsightsPage> {
                   BarChartData(
                     alignment: BarChartAlignment.spaceAround,
                     maxY: _appUsages.first.usage.inMinutes.toDouble(),
-                    barTouchData: BarTouchData(enabled: false),
+                    barTouchData: BarTouchData(
+                      enabled: true,
+                      touchTooltipData: BarTouchTooltipData(
+                        getTooltipColor: (group) => Colors.transparent,
+                        getTooltipItem: (group, groupIndex, rod, rodIndex) => null,
+                      ),
+                      touchCallback: (FlTouchEvent event, barTouchResponse) {
+                        if (!event.isInterestedForInteractions ||
+                            barTouchResponse == null ||
+                            barTouchResponse.spot == null) {
+                          return;
+                        }
+                        if (event is FlTapUpEvent) {
+                          final index =
+                              barTouchResponse.spot!.touchedBarGroupIndex;
+                          if (index >= 0 && index < _appUsages.length) {
+                            _showAppDetails(context, _appUsages[index]);
+                          }
+                        }
+                      },
+                    ),
                     titlesData: FlTitlesData(
                       show: true,
                       bottomTitles: AxisTitles(
@@ -372,6 +396,99 @@ class _InsightsPageState extends State<InsightsPage> {
           ),
         ],
       ),
+    );
+  }
+  void _showAppDetails(BuildContext context, AppUsageInfo app) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: AppColors.bgCard,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) {
+        String name = app.appName;
+        if (name == 'Unknown' || name.trim().isEmpty) {
+          name = app.packageName.split('.').last;
+        }
+        final hours = app.usage.inHours;
+        final minutes = app.usage.inMinutes.remainder(60);
+
+        return Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Center(
+                child: Container(
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: AppColors.textHint.withValues(alpha: 0.3),
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 24),
+              Row(
+                children: [
+                  const Icon(Icons.android_rounded,
+                      color: AppColors.primary, size: 32),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      name,
+                      style: const TextStyle(
+                          color: AppColors.textPrimary,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              Text(
+                'Paquete: ${app.packageName}',
+                style: const TextStyle(
+                    color: AppColors.textHint, fontSize: 12),
+              ),
+              const SizedBox(height: 24),
+              const Text(
+                'Tiempo de uso hoy',
+                style: TextStyle(
+                    color: AppColors.textSecondary, fontSize: 14),
+              ),
+              const SizedBox(height: 8),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.baseline,
+                textBaseline: TextBaseline.alphabetic,
+                children: [
+                  Text('$hours',
+                      style: const TextStyle(
+                          fontSize: 32,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.primary)),
+                  const Text('h ',
+                      style: TextStyle(
+                          fontSize: 16,
+                          color: AppColors.textSecondary)),
+                  Text('$minutes',
+                      style: const TextStyle(
+                          fontSize: 32,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.primary)),
+                  const Text('m',
+                      style: TextStyle(
+                          fontSize: 16,
+                          color: AppColors.textSecondary)),
+                ],
+              ),
+              const SizedBox(height: 32),
+            ],
+          ),
+        );
+      },
     );
   }
 }

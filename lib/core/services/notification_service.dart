@@ -3,6 +3,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest_all.dart' as tz_data;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_timezone/flutter_timezone.dart';
 
 /// Servicio centralizado de notificaciones locales.
 /// Llama a [init] una sola vez al arrancar la app.
@@ -40,6 +41,21 @@ class NotificationService {
   // ─── Init ──────────────────────────────────────────────────────────────
   Future<void> init() async {
     tz_data.initializeTimeZones();
+
+    // flutter_timezone puede devolver un String o un objeto TimezoneInfo
+    // cuyo toString() tiene el formato "TimezoneInfo(America/Mexico_City, ...)".
+    // Extraemos solo el identificador IANA con un regex para evitar errores.
+    try {
+      final rawTz = await FlutterTimezone.getLocalTimezone();
+      final tzString = rawTz.toString();
+      // Si viene como "TimezoneInfo(America/Mexico_City, ...)"  → capturamos el primer argumento
+      final match = RegExp(r'TimezoneInfo\(([^,)]+)').firstMatch(tzString);
+      final tzId = match != null ? match.group(1)!.trim() : tzString.trim();
+      tz.setLocalLocation(tz.getLocation(tzId));
+    } catch (_) {
+      // Fallback seguro: UTC
+      tz.setLocalLocation(tz.getLocation('UTC'));
+    }
 
     const androidSettings =
         AndroidInitializationSettings('@mipmap/ic_launcher');

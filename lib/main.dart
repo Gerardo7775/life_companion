@@ -6,6 +6,7 @@ import 'core/di/injection_container.dart';
 import 'core/router/app_router.dart';
 import 'core/services/notification_service.dart';
 import 'core/services/daily_checker_service.dart';
+import 'core/theme/theme_cubit.dart';
 import 'features/agenda/presentation/state/task_bloc.dart';
 import 'features/agenda/presentation/state/task_state.dart';
 import 'features/habits/presentation/state/habit_bloc.dart';
@@ -65,11 +66,20 @@ class LifeCompanionApp extends StatelessWidget {
           create: (_) => sl<WellnessBloc>(),
         ),
       ],
-      child: MaterialApp.router(
-        title: 'Life Companion',
-        debugShowCheckedModeBanner: false,
-        theme: AppTheme.darkTheme,
-        routerConfig: appRouter,
+      child: BlocProvider<ThemeCubit>(
+        create: (_) => ThemeCubit(),
+        child: BlocBuilder<ThemeCubit, ThemeMode>(
+          builder: (context, themeMode) {
+            return MaterialApp.router(
+              title: 'Life Companion',
+              debugShowCheckedModeBanner: false,
+              theme: AppTheme.lightTheme,
+              darkTheme: AppTheme.darkTheme,
+              themeMode: themeMode,
+              routerConfig: appRouter,
+            );
+          },
+        ),
       ),
     );
   }

@@ -17,6 +17,13 @@ class CreateHabitEvent extends HabitEvent {
   List<Object?> get props => [habit];
 }
 
+class UpdateHabitEvent extends HabitEvent {
+  final HabitEntity habit;
+  const UpdateHabitEvent(this.habit);
+  @override
+  List<Object?> get props => [habit];
+}
+
 class DeleteHabitEvent extends HabitEvent {
   final int habitId;
   const DeleteHabitEvent(this.habitId);

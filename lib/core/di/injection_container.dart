@@ -78,6 +78,9 @@ Future<void> initDependencies() async {
     () => CreateHabitUseCase(sl<HabitRepositoryImpl>()),
   );
   sl.registerLazySingleton(
+    () => UpdateHabitUseCase(sl<HabitRepositoryImpl>()),
+  );
+  sl.registerLazySingleton(
     () => DeleteHabitUseCase(sl<HabitRepositoryImpl>()),
   );
   sl.registerLazySingleton(() => LogHabitUseCase(sl<HabitRepositoryImpl>()));
@@ -86,6 +89,7 @@ Future<void> initDependencies() async {
     () => HabitBloc(
       getHabits: sl(),
       createHabit: sl(),
+      updateHabit: sl(),
       deleteHabit: sl(),
       logHabit: sl(),
     ),

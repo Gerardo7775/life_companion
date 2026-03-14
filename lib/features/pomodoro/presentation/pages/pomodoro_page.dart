@@ -7,6 +7,7 @@ import '../../../../core/constants/app_colors.dart';
 import '../../../../core/widgets/glass_card.dart';
 import '../../../gamification/presentation/state/gamification_bloc.dart';
 import '../../../gamification/presentation/state/gamification_state.dart';
+import '../../../../core/widgets/safe_pop_scope.dart';
 import '../state/pomodoro_bloc.dart';
 import '../state/pomodoro_state.dart';
 
@@ -57,8 +58,10 @@ class _PomodoroView extends StatelessWidget {
         }
       },
       builder: (ctx, state) {
-        return Scaffold(
-          backgroundColor: AppColors.bgDark,
+        return SafePopScope(
+          fallbackRoute: '/',
+          child: Scaffold(
+            backgroundColor: AppColors.bgDark,
           appBar: AppBar(
             backgroundColor: Colors.transparent,
             elevation: 0,
@@ -111,8 +114,9 @@ class _PomodoroView extends StatelessWidget {
               ],
             ),
           ),
-        );
-      },
+        ),
+      );
+    },
     );
   }
 }

@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/widgets/glass_card.dart';
+import '../../../../core/widgets/safe_pop_scope.dart';
 import '../../domain/entities/wellness_entities.dart';
 import '../state/wellness_bloc.dart';
 import '../state/wellness_state.dart';
@@ -13,72 +14,74 @@ class JournalPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.bgDark,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_rounded,
-              color: AppColors.textPrimary),
-          onPressed: () {
-            if (context.canPop()) {
-              context.pop();
-            } else {
-              context.go('/wellness');
+    return SafePopScope(
+      fallbackRoute: '/wellness',
+      child: Scaffold(
+        backgroundColor: AppColors.bgDark,
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back_ios_rounded,
+                color: AppColors.textPrimary),
+            onPressed: () {
+              if (context.canPop()) {
+                context.pop();
+              } else {
+                context.go('/wellness');
+              }
+            },
+          ),
+          title: const Text('Diario 📓',
+              style: TextStyle(
+                  color: AppColors.textPrimary, fontWeight: FontWeight.bold)),
+          actions: [
+            IconButton(
+              icon: Container(
+                padding: const EdgeInsets.all(6),
+                decoration: BoxDecoration(
+                  color: AppColors.accent.withValues(alpha: 0.15),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: const Icon(Icons.add_rounded, color: AppColors.accent),
+              ),
+              onPressed: () => context.go('/wellness/journal/new'),
+            ),
+          ],
+        ),
+        body: BlocBuilder<WellnessBloc, WellnessState>(
+          builder: (ctx, state) {
+            if (state is WellnessLoading) {
+              return const Center(
+                  child: CircularProgressIndicator(color: AppColors.accent));
             }
+            final entries =
+                state is WellnessLoaded ? state.journal : <JournalEntryEntity>[];
+
+            if (entries.isEmpty) return _EmptyJournal();
+
+            return ListView.separated(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              itemCount: entries.length,
+              separatorBuilder: (_, __) => const SizedBox(height: 8),
+              itemBuilder: (ctx, i) => _EntryCard(
+                entry: entries[i],
+                onDelete: () => ctx.read<WellnessBloc>().add(
+                      DeleteJournalEntryEvent(entries[i].id!),
+                    ),
+                onTap: () {
+                  context.go('/wellness/journal/new?id=${entries[i].id}');
+                },
+              ),
+            );
           },
         ),
-        title: const Text('Diario 📓',
-            style: TextStyle(
-                color: AppColors.textPrimary, fontWeight: FontWeight.bold)),
-        actions: [
-          IconButton(
-            icon: Container(
-              padding: const EdgeInsets.all(6),
-              decoration: BoxDecoration(
-                color: AppColors.accent.withValues(alpha: 0.15),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: const Icon(Icons.add_rounded, color: AppColors.accent),
-            ),
-            onPressed: () => context.go('/wellness/journal/new'),
-          ),
-        ],
-      ),
-      body: BlocBuilder<WellnessBloc, WellnessState>(
-        builder: (ctx, state) {
-          if (state is WellnessLoading) {
-            return const Center(
-                child: CircularProgressIndicator(color: AppColors.accent));
-          }
-          final entries =
-              state is WellnessLoaded ? state.journal : <JournalEntryEntity>[];
-
-          if (entries.isEmpty) return _EmptyJournal();
-
-          return ListView.separated(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            itemCount: entries.length,
-            separatorBuilder: (_, __) => const SizedBox(height: 8),
-            itemBuilder: (ctx, i) => _EntryCard(
-              entry: entries[i],
-              onDelete: () => ctx.read<WellnessBloc>().add(
-                    DeleteJournalEntryEvent(entries[i].id!),
-                  ),
-              onTap: () {
-                // Navegar a edición pasando el id
-                context.go('/wellness/journal/new?id=${entries[i].id}');
-              },
-            ),
-          );
-        },
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => context.go('/wellness/journal/new'),
-        backgroundColor: AppColors.accent,
-        foregroundColor: Colors.black,
-        child: const Icon(Icons.edit_rounded),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () => context.go('/wellness/journal/new'),
+          backgroundColor: AppColors.accent,
+          foregroundColor: Colors.black,
+          child: const Icon(Icons.edit_rounded),
+        ),
       ),
     );
   }

@@ -16,6 +16,13 @@ class CreateHabitUseCase {
       repository.createHabit(habit);
 }
 
+class UpdateHabitUseCase {
+  final IHabitRepository repository;
+  UpdateHabitUseCase(this.repository);
+  Future<Either<Failure, HabitEntity>> call(HabitEntity habit) =>
+      repository.updateHabit(habit);
+}
+
 class DeleteHabitUseCase {
   final IHabitRepository repository;
   DeleteHabitUseCase(this.repository);

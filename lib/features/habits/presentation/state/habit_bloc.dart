@@ -7,21 +7,25 @@ import 'habit_state.dart';
 class HabitBloc extends Bloc<HabitEvent, HabitState> {
   final GetHabitsUseCase _getHabits;
   final CreateHabitUseCase _createHabit;
+  final UpdateHabitUseCase _updateHabit;
   final DeleteHabitUseCase _deleteHabit;
   final LogHabitUseCase _logHabit;
 
   HabitBloc({
     required GetHabitsUseCase getHabits,
     required CreateHabitUseCase createHabit,
+    required UpdateHabitUseCase updateHabit,
     required DeleteHabitUseCase deleteHabit,
     required LogHabitUseCase logHabit,
   }) : _getHabits = getHabits,
        _createHabit = createHabit,
+       _updateHabit = updateHabit,
        _deleteHabit = deleteHabit,
        _logHabit = logHabit,
        super(HabitInitial()) {
     on<LoadHabitsEvent>(_onLoad);
     on<CreateHabitEvent>(_onCreate);
+    on<UpdateHabitEvent>(_onUpdate);
     on<DeleteHabitEvent>(_onDelete);
     on<LogHabitEvent>(_onLog);
   }
@@ -64,6 +68,21 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
     Emitter<HabitState> emit,
   ) async {
     await _createHabit(event.habit);
+    final result = await _getHabits();
+    await result.fold(
+      (f) async => emit(HabitError(f.message)),
+      (h) async {
+        await _syncNotifications(h);
+        emit(HabitLoaded(h));
+      },
+    );
+  }
+
+  Future<void> _onUpdate(
+    UpdateHabitEvent event,
+    Emitter<HabitState> emit,
+  ) async {
+    await _updateHabit(event.habit);
     final result = await _getHabits();
     await result.fold(
       (f) async => emit(HabitError(f.message)),

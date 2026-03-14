@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/widgets/glass_card.dart';
+import '../../../../core/widgets/safe_pop_scope.dart';
 import '../../domain/entities/wellness_entities.dart';
 import '../state/wellness_bloc.dart';
 import '../state/wellness_state.dart';
@@ -24,117 +25,120 @@ class _WellnessPageState extends State<WellnessPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.bgDark,
-      body: SafeArea(
-        child: BlocBuilder<WellnessBloc, WellnessState>(
-          builder: (ctx, state) {
-            final loaded = state is WellnessLoaded ? state : null;
-            return CustomScrollView(
-              slivers: [
-                // ── Header ──────────────────────────────────────────────────
-                SliverToBoxAdapter(
-                  child: _Header(
-                    todayMood: loaded?.todayMood,
-                    weeklyAvg: loaded?.weeklyAvgMood ?? 0,
-                    onLogMood: () => context.go('/wellness/mood'),
-                  ),
-                ),
-
-                // ── Quick stats ──────────────────────────────────────────────
-                SliverToBoxAdapter(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: _NavCard(
-                            icon: Icons.auto_graph_rounded,
-                            color: AppColors.primary,
-                            label: 'Insights',
-                            sub: 'Correlaciones',
-                            onTap: () => context.go('/wellness/insights'),
-                          ),
-                        ),
-                        const SizedBox(width: 10),
-                        Expanded(
-                          child: _NavCard(
-                            icon: Icons.book_rounded,
-                            color: AppColors.accent,
-                            label: 'Diario',
-                            sub: '${loaded?.journal.length ?? 0} entradas',
-                            onTap: () => context.go('/wellness/journal'),
-                          ),
-                        ),
-                        const SizedBox(width: 10),
-                        Expanded(
-                          child: _NavCard(
-                            icon: Icons.mood_rounded,
-                            color: AppColors.warning,
-                            label: 'Ánimo',
-                            sub: 'Registrar',
-                            onTap: () => context.go('/wellness/mood'),
-                          ),
-                        ),
-                      ],
+    return SafePopScope(
+      fallbackRoute: '/',
+      child: Scaffold(
+        backgroundColor: AppColors.bgDark,
+        body: SafeArea(
+          child: BlocBuilder<WellnessBloc, WellnessState>(
+            builder: (ctx, state) {
+              final loaded = state is WellnessLoaded ? state : null;
+              return CustomScrollView(
+                slivers: [
+                  // ── Header ──────────────────────────────────────────────────
+                  SliverToBoxAdapter(
+                    child: _Header(
+                      todayMood: loaded?.todayMood,
+                      weeklyAvg: loaded?.weeklyAvgMood ?? 0,
+                      onLogMood: () => context.go('/wellness/mood'),
                     ),
                   ),
-                ),
 
-                // ── Tendencia de ánimo ──────────────────────────────────────
-                if (loaded != null && loaded.recentMoods.isNotEmpty) ...[
+                  // ── Quick stats ──────────────────────────────────────────────
                   SliverToBoxAdapter(
                     child: Padding(
-                      padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
-                      child: Text('Últimos 7 días',
-                          style: Theme.of(context).textTheme.titleLarge),
-                    ),
-                  ),
-                  SliverToBoxAdapter(
-                    child: _MoodWeekChart(moods: loaded.recentMoods),
-                  ),
-                ],
-
-                // ── Entradas recientes del diario ────────────────────────────
-                if (loaded != null && loaded.journal.isNotEmpty) ...[
-                  SliverToBoxAdapter(
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(16, 16, 16, 4),
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text('Diario Reciente',
-                              style: Theme.of(context).textTheme.titleLarge),
-                          TextButton(
-                            onPressed: () => context.go('/wellness/journal'),
-                            child: const Text('Ver todo',
-                                style: TextStyle(
-                                    color: AppColors.accent, fontSize: 13)),
+                          Expanded(
+                            child: _NavCard(
+                              icon: Icons.auto_graph_rounded,
+                              color: AppColors.primary,
+                              label: 'Insights',
+                              sub: 'Correlaciones',
+                              onTap: () => context.go('/wellness/insights'),
+                            ),
+                          ),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: _NavCard(
+                              icon: Icons.book_rounded,
+                              color: AppColors.accent,
+                              label: 'Diario',
+                              sub: '${loaded?.journal.length ?? 0} entradas',
+                              onTap: () => context.go('/wellness/journal'),
+                            ),
+                          ),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: _NavCard(
+                              icon: Icons.mood_rounded,
+                              color: AppColors.warning,
+                              label: 'Ánimo',
+                              sub: 'Registrar',
+                              onTap: () => context.go('/wellness/mood'),
+                            ),
                           ),
                         ],
                       ),
                     ),
                   ),
-                  SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                      (_, i) => _JournalTile(entry: loaded.journal[i]),
-                      childCount: loaded.journal.length.clamp(0, 3),
-                    ),
-                  ),
-                ],
 
-                const SliverToBoxAdapter(child: SizedBox(height: 100)),
-              ],
-            );
-          },
+                  // ── Tendencia de ánimo ──────────────────────────────────────
+                  if (loaded != null && loaded.recentMoods.isNotEmpty) ...[
+                    SliverToBoxAdapter(
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
+                        child: Text('Últimos 7 días',
+                            style: Theme.of(context).textTheme.titleLarge),
+                      ),
+                    ),
+                    SliverToBoxAdapter(
+                      child: _MoodWeekChart(moods: loaded.recentMoods),
+                    ),
+                  ],
+
+                  // ── Entradas recientes del diario ────────────────────────────
+                  if (loaded != null && loaded.journal.isNotEmpty) ...[
+                    SliverToBoxAdapter(
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(16, 16, 16, 4),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text('Diario Reciente',
+                                style: Theme.of(context).textTheme.titleLarge),
+                            TextButton(
+                              onPressed: () => context.go('/wellness/journal'),
+                              child: const Text('Ver todo',
+                                  style: TextStyle(
+                                      color: AppColors.accent, fontSize: 13)),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    SliverList(
+                      delegate: SliverChildBuilderDelegate(
+                        (_, i) => _JournalTile(entry: loaded.journal[i]),
+                        childCount: loaded.journal.length.clamp(0, 3),
+                      ),
+                    ),
+                  ],
+
+                  const SliverToBoxAdapter(child: SizedBox(height: 100)),
+                ],
+              );
+            },
+          ),
         ),
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => context.go('/wellness/journal/new'),
-        icon: const Icon(Icons.edit_rounded),
-        label: const Text('Nueva entrada'),
-        backgroundColor: AppColors.accent,
-        foregroundColor: Colors.black,
+        floatingActionButton: FloatingActionButton.extended(
+          onPressed: () => context.go('/wellness/journal/new'),
+          icon: const Icon(Icons.edit_rounded),
+          label: const Text('Nueva entrada'),
+          backgroundColor: AppColors.accent,
+          foregroundColor: Colors.black,
+        ),
       ),
     );
   }
@@ -166,7 +170,13 @@ class _Header extends StatelessWidget {
               IconButton(
                 icon: const Icon(Icons.arrow_back_ios_rounded,
                     color: AppColors.textPrimary, size: 20),
-                onPressed: () => context.go('/'),
+                onPressed: () {
+                  if (context.canPop()) {
+                    context.pop();
+                  } else {
+                    context.go('/');
+                  }
+                },
               ),
               const SizedBox(width: 8),
               const Text('Bienestar 🧘',

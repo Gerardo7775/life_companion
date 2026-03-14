@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/widgets/glass_card.dart';
+import '../../../../core/widgets/safe_pop_scope.dart';
 import '../../../gamification/presentation/state/gamification_bloc.dart';
 import '../../../gamification/presentation/state/gamification_state.dart';
 import '../../../habits/presentation/state/habit_bloc.dart';
@@ -60,9 +61,11 @@ class _RoutinePageState extends State<RoutinePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Scaffold(
+    return SafePopScope(
+      fallbackRoute: '/',
+      child: Stack(
+        children: [
+          Scaffold(
           backgroundColor: AppColors.bgDark,
           appBar: AppBar(
             backgroundColor: Colors.transparent,
@@ -199,7 +202,8 @@ class _RoutinePageState extends State<RoutinePage> {
             ],
           ),
         ),
-      ],
+        ],
+      ),
     );
   }
 

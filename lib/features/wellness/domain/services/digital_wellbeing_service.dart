@@ -22,7 +22,7 @@ class DigitalWellbeingService {
     }
   }
 
-  /// Retorna las aplicaciones agrupadas y ordenadas del día actual
+  /// Retorna las aplicaciones agrupadas y ordenadas del día actual (sin apps de sistema)
   Future<List<AppUsageInfo>> getDailyUsage() async {
     try {
       final now = DateTime.now();
@@ -30,8 +30,26 @@ class DigitalWellbeingService {
 
       final infos = await AppUsage().getAppUsage(startOfDay, now);
 
-      // Filtrar apps sin tiempo y aquellas nativas genéricas si es posible (launchers, ui)
-      final filtered = infos.where((info) => info.usage.inMinutes > 0).toList();
+      // Palabras clave de paquetes que queremos ignorar (Launchers, System UI, etc.)
+      const systemKeywords = [
+        'android',
+        'launcher',
+        'systemui',
+        'miui',
+        'samsung',
+        'settings',
+        'nexus',
+        'pixel',
+        'vending', // Google Play Store de fondo
+      ];
+
+      // Filtrar apps sin tiempo y aquellas nativas genéricas
+      final filtered = infos.where((info) {
+        final packageName = info.packageName.toLowerCase();
+        final isSystemApp =
+            systemKeywords.any((keyword) => packageName.contains(keyword));
+        return !isSystemApp && info.usage.inMinutes > 0;
+      }).toList();
 
       // Ordenar de mayor a menor uso
       filtered.sort((a, b) => b.usage.compareTo(a.usage));
@@ -48,17 +66,12 @@ class DigitalWellbeingService {
     }
   }
 
-  /// Calcula el tiempo en pantalla total del día actual sumando todas las apps excluyendo launchers típicos.
+  /// Calcula el tiempo en pantalla total del día actual.
+  /// Como getDailyUsage ya viene limpio, solo sumamos todo.
   Future<Duration> getTotalScreenTime() async {
     final apps = await getDailyUsage();
     Duration total = Duration.zero;
     for (var app in apps) {
-      // Intentamos filtrar launchers / systemUI genéricos
-      if (app.packageName.contains('launcher') ||
-          app.packageName.contains('systemui') ||
-          app.packageName == 'android') {
-        continue;
-      }
       total += app.usage;
     }
     return total;

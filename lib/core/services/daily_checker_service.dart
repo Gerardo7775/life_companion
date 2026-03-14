@@ -1,4 +1,5 @@
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sqflite/sqflite.dart';
 import 'package:intl/intl.dart';
 import '../storage/database_helper.dart';
 import '../../features/gamification/data/datasources/gamification_local_datasource.dart';
@@ -44,18 +45,24 @@ class DailyCheckerService {
         // Revisar si hay un log completado para ese día
         final logs = await db.query(
           'HabitLogs',
-          where: 'habit_id = ? AND date = ? AND is_completed = 1',
+          where: 'habit_id = ? AND log_date = ? AND is_completed = 1',
           whereArgs: [habitId, dateStr],
         );
         
         if (logs.isEmpty) {
           totalFailedHabits++;
-          // Romper racha
-          await db.update(
-            'Habits',
-            {'current_streak': 0},
-            where: 'id = ?',
-            whereArgs: [habitId],
+          // current_streak se calcula dinámicamente en el datasource, no existe
+          // como columna en Habits. Para "romper" la racha de un día pasado
+          // insertamos un log de ese día con is_completed = 0 si no existía ninguno.
+          await db.insert(
+            'HabitLogs',
+            {
+              'habit_id': habitId,
+              'log_date': dateStr,
+              'achieved_value': 0,
+              'is_completed': 0,
+            },
+            conflictAlgorithm: ConflictAlgorithm.ignore,
           );
         }
       }
