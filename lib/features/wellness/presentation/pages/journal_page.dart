@@ -17,13 +17,13 @@ class JournalPage extends StatelessWidget {
     return SafePopScope(
       fallbackRoute: '/wellness',
       child: Scaffold(
-        backgroundColor: AppColors.bgDark,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         appBar: AppBar(
           backgroundColor: Colors.transparent,
           elevation: 0,
           leading: IconButton(
-            icon: const Icon(Icons.arrow_back_ios_rounded,
-                color: AppColors.textPrimary),
+            icon: Icon(Icons.arrow_back_ios_rounded,
+                color: Theme.of(context).colorScheme.onSurface),
             onPressed: () {
               if (context.canPop()) {
                 context.pop();
@@ -32,9 +32,9 @@ class JournalPage extends StatelessWidget {
               }
             },
           ),
-          title: const Text('Diario 📓',
+          title: Text('Diario 📓',
               style: TextStyle(
-                  color: AppColors.textPrimary, fontWeight: FontWeight.bold)),
+                  color: Theme.of(context).colorScheme.onSurface, fontWeight: FontWeight.bold)),
           actions: [
             IconButton(
               icon: Container(
@@ -110,9 +110,9 @@ class _EntryCard extends StatelessWidget {
         return await showDialog<bool>(
           context: context,
           builder: (ctx) => AlertDialog(
-            backgroundColor: AppColors.bgCard,
-            title: const Text('¿Eliminar entrada?',
-                style: TextStyle(color: AppColors.textPrimary)),
+            backgroundColor: Theme.of(context).cardTheme.color,
+            title: Text('¿Eliminar entrada?',
+                style: TextStyle(color: Theme.of(context).colorScheme.onSurface)),
             content: const Text('Esta acción no se puede deshacer.',
                 style: TextStyle(color: AppColors.textSecondary)),
             actions: [
@@ -147,8 +147,8 @@ class _EntryCard extends StatelessWidget {
                     ),
                   Expanded(
                     child: Text(entry.title,
-                        style: const TextStyle(
-                            color: AppColors.textPrimary,
+                        style: TextStyle(
+                            color: Theme.of(context).colorScheme.onSurface,
                             fontWeight: FontWeight.bold,
                             fontSize: 15)),
                   ),
@@ -210,9 +210,9 @@ class _EmptyJournal extends StatelessWidget {
                   color: AppColors.accent, size: 40),
             ),
             const SizedBox(height: 20),
-            const Text('Diario vacío',
+            Text('Diario vacío',
                 style: TextStyle(
-                    color: AppColors.textPrimary,
+                    color: Theme.of(context).colorScheme.onSurface,
                     fontSize: 18,
                     fontWeight: FontWeight.bold)),
             const SizedBox(height: 8),

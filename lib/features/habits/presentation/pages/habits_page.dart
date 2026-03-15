@@ -34,7 +34,7 @@ class _HabitsPageState extends State<HabitsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.bgDark,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Stack(
         children: [
           SafeArea(
@@ -192,7 +192,7 @@ class _HabitsPageState extends State<HabitsPage> {
     showModalBottomSheet(
       context: ctx,
       isScrollControlled: true,
-      backgroundColor: AppColors.bgCard,
+      backgroundColor: Theme.of(context).cardTheme.color,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
@@ -430,7 +430,7 @@ class _HabitCard extends StatelessWidget {
                 children: [
                   CircularProgressIndicator(
                     value: progress.toDouble(),
-                    backgroundColor: AppColors.bgCardLight,
+                    backgroundColor: Theme.of(context).dividerColor.withValues(alpha: 0.1),
                     color: habit.isCompletedToday
                         ? AppColors.success
                         : _catColor,

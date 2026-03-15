@@ -1,86 +1,136 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import '../constants/app_colors.dart';
 
 class MainShell extends StatelessWidget {
   final Widget child;
   const MainShell({super.key, required this.child});
 
-  int _currentIndex(BuildContext context) {
-    final location = GoRouterState.of(context).uri.path;
-    if (location.startsWith('/tasks'))    return 1;
-    if (location.startsWith('/habits'))   return 2;
-    if (location.startsWith('/finances')) return 3;
-    if (location.startsWith('/goals'))    return 4;
-    if (location.startsWith('/settings')) return 5;
-    return 0;
+  String _currentRoute(BuildContext context) {
+    return GoRouterState.of(context).uri.path;
   }
 
   @override
   Widget build(BuildContext context) {
-    final idx = _currentIndex(context);
+    final location = _currentRoute(context);
+
     return Scaffold(
+      extendBody: true, // Importante para que el body pase por debajo del notch
       body: child,
-      bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-          color: AppColors.bgCard,
-          border: Border(
-            top: BorderSide(color: AppColors.glassBorder, width: 1),
+      
+      // 1. Botón central flotante (Speed Dial)
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButton: SpeedDial(
+        icon: Icons.grid_view_rounded,
+        activeIcon: Icons.close_rounded,
+        backgroundColor: AppColors.primary,
+        foregroundColor: Colors.white,
+        overlayColor: AppColors.bgDark,
+        overlayOpacity: 0.8,
+        elevation: 8,
+        shape: const CircleBorder(),
+        childrenButtonSize: const Size(56, 56),
+        spaceBetweenChildren: 12,
+        children: [
+          SpeedDialChild(
+            child: const Icon(Icons.settings_rounded, color: Colors.white),
+            backgroundColor: AppColors.textHint,
+            label: 'Ajustes',
+            labelStyle: TextStyle(fontWeight: FontWeight.w500, color: Theme.of(context).colorScheme.onSurface),
+            labelBackgroundColor: Theme.of(context).cardTheme.color,
+            onTap: () => context.go('/settings'),
           ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.3),
-              blurRadius: 20,
-              offset: const Offset(0, -5),
-            ),
-          ],
+          SpeedDialChild(
+            child: const Icon(Icons.star_rounded, color: Colors.white),
+            backgroundColor: AppColors.warning,
+            label: 'Recompensas',
+            labelStyle: TextStyle(fontWeight: FontWeight.w500, color: Theme.of(context).colorScheme.onSurface),
+            labelBackgroundColor: Theme.of(context).cardTheme.color,
+            onTap: () => context.go('/rewards'),
+          ),
+          SpeedDialChild(
+            child: const Icon(Icons.flag_rounded, color: Colors.white),
+            backgroundColor: AppColors.success,
+            label: 'Metas',
+            labelStyle: TextStyle(fontWeight: FontWeight.w500, color: Theme.of(context).colorScheme.onSurface),
+            labelBackgroundColor: Theme.of(context).cardTheme.color,
+            onTap: () => context.go('/goals'),
+          ),
+          SpeedDialChild(
+            child: const Icon(Icons.timer_rounded, color: Colors.white),
+            backgroundColor: AppColors.error,
+            label: 'Pomodoro',
+            labelStyle: TextStyle(fontWeight: FontWeight.w500, color: Theme.of(context).colorScheme.onSurface),
+            labelBackgroundColor: Theme.of(context).cardTheme.color,
+            onTap: () => context.go('/pomodoro'),
+          ),
+          SpeedDialChild(
+            child: const Icon(Icons.favorite_rounded, color: Colors.white),
+            backgroundColor: AppColors.info,
+            label: 'Bienestar',
+            labelStyle: TextStyle(fontWeight: FontWeight.w500, color: Theme.of(context).colorScheme.onSurface),
+            labelBackgroundColor: Theme.of(context).cardTheme.color,
+            onTap: () => context.go('/wellness'),
+          ),
+        ],
+      ),
+      
+      // 2. Barra inferior con hueco en el centro
+      bottomNavigationBar: BottomAppBar(
+        color: Theme.of(context).bottomNavigationBarTheme.backgroundColor,
+        shape: const CircularNotchedRectangle(),
+        notchMargin: 8.0,
+        elevation: 20,
+        clipBehavior: Clip.antiAlias,
+        padding: EdgeInsets.zero,
+        child: SizedBox(
+          height: 60,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              // Izquierda
+              _buildNavItem(context, Icons.home_rounded, 'Inicio', '/', location),
+              _buildNavItem(context, Icons.check_circle_outline_rounded, 'Tareas', '/tasks', location),
+              
+              const SizedBox(width: 48), // Espacio para el botón central
+              
+              // Derecha
+              _buildNavItem(context, Icons.loop_rounded, 'Hábitos', '/habits', location),
+              _buildNavItem(context, Icons.account_balance_wallet_rounded, 'Finanzas', '/finances', location),
+            ],
+          ),
         ),
-        child: SafeArea(
-          child: BottomNavigationBar(
-            currentIndex: idx,
-            backgroundColor: Colors.transparent,
-            elevation: 0,
-            selectedItemColor: AppColors.primary,
-            unselectedItemColor: AppColors.textHint,
-            type: BottomNavigationBarType.fixed,
-            selectedFontSize: 10,
-            unselectedFontSize: 10,
-            items: const [
-              BottomNavigationBarItem(
-                icon: Icon(Icons.home_rounded),
-                label: 'Inicio',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.check_circle_outline_rounded),
-                label: 'Tareas',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.loop_rounded),
-                label: 'Hábitos',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.account_balance_wallet_rounded),
-                label: 'Finanzas',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.flag_rounded),
-                label: 'Metas',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.settings_rounded),
-                label: 'Ajustes',
+      ),
+    );
+  }
+
+  Widget _buildNavItem(BuildContext context, IconData icon, String label, String route, String currentLocation) {
+    final isSelected = currentLocation == route || (route != '/' && currentLocation.startsWith(route));
+    final color = isSelected ? AppColors.primary : AppColors.textHint;
+
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: () => context.go(route),
+        customBorder: const CircleBorder(),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(icon, color: color, size: 24),
+              const SizedBox(height: 2),
+              Text(
+                label,
+                style: TextStyle(
+                  color: color,
+                  fontSize: 10,
+                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+                ),
               ),
             ],
-            onTap: (i) {
-              switch (i) {
-                case 0: context.go('/');
-                case 1: context.go('/tasks');
-                case 2: context.go('/habits');
-                case 3: context.go('/finances');
-                case 4: context.go('/goals');
-                case 5: context.go('/settings');
-              }
-            },
           ),
         ),
       ),

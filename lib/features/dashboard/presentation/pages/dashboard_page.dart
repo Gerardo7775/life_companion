@@ -45,7 +45,17 @@ class _DashboardPageState extends State<DashboardPage> {
     return 'Buenas noches 🌙';
   }
 
-  LinearGradient get _headerGradient {
+  LinearGradient _headerGradient(BuildContext context) {
+    if (Theme.of(context).brightness == Brightness.light) {
+      return LinearGradient(
+        colors: [
+          Theme.of(context).primaryColor.withValues(alpha: 0.1),
+          Theme.of(context).primaryColor.withValues(alpha: 0.02),
+        ],
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+      );
+    }
     final hour = DateTime.now().hour;
     if (hour < 12) return AppColors.morningGradient;
     if (hour < 19) return AppColors.afternoonGradient;
@@ -62,24 +72,24 @@ class _DashboardPageState extends State<DashboardPage> {
     final suggestion = SuggestionEngine.generateSuggestion(tasks: tasks, habits: habits);
 
     return Scaffold(
-      backgroundColor: AppColors.bgDark,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         child: CustomScrollView(
           slivers: [
             // Header
             SliverToBoxAdapter(
               child: Container(
-                decoration: BoxDecoration(gradient: _headerGradient),
+                decoration: BoxDecoration(gradient: _headerGradient(context)),
                 padding: const EdgeInsets.fromLTRB(20, 28, 20, 28),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       _greeting,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 26,
                         fontWeight: FontWeight.bold,
-                        color: AppColors.textPrimary,
+                        color: Theme.of(context).colorScheme.onSurface,
                       ),
                     ),
                     const SizedBox(height: 4),
@@ -97,8 +107,10 @@ class _DashboardPageState extends State<DashboardPage> {
                     GlassCard(
                       margin: EdgeInsets.zero,
                       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                      backgroundColor: Colors.black.withValues(alpha: 0.2),
-                      borderColor: Colors.white.withValues(alpha: 0.1),
+                      backgroundColor: Theme.of(context).brightness == Brightness.dark 
+                          ? Colors.black.withValues(alpha: 0.2) 
+                          : Theme.of(context).cardTheme.color!.withValues(alpha: 0.6),
+                      borderColor: Theme.of(context).dividerColor.withValues(alpha: 0.1),
                       child: Row(
                         children: [
                           Text(suggestion.icon, style: const TextStyle(fontSize: 28)),
@@ -106,8 +118,8 @@ class _DashboardPageState extends State<DashboardPage> {
                           Expanded(
                             child: Text(
                               suggestion.message,
-                              style: const TextStyle(
-                                color: Colors.white,
+                              style: TextStyle(
+                                color: Theme.of(context).colorScheme.onSurface,
                                 fontSize: 13,
                                 height: 1.3,
                                 fontWeight: FontWeight.w500,
@@ -304,8 +316,8 @@ class _XpBarWidget extends StatelessWidget {
                       children: [
                         Text(
                           stats.levelName,
-                          style: const TextStyle(
-                            color: AppColors.textPrimary,
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.onSurface,
                             fontWeight: FontWeight.w600,
                             fontSize: 13,
                           ),
@@ -324,7 +336,7 @@ class _XpBarWidget extends StatelessWidget {
                       borderRadius: BorderRadius.circular(4),
                       child: LinearProgressIndicator(
                         value: stats.levelProgress,
-                        backgroundColor: AppColors.bgCardLight,
+                        backgroundColor: Theme.of(context).dividerColor.withValues(alpha: 0.1),
                         valueColor:
                             const AlwaysStoppedAnimation(AppColors.primary),
                         minHeight: 7,
@@ -515,8 +527,8 @@ class _WellnessCard extends StatelessWidget {
                         todayMood != null
                             ? 'Ánimo hoy: ${todayMood.moodLabel}'
                             : '¿Cómo te sientes hoy?',
-                        style: const TextStyle(
-                          color: AppColors.textPrimary,
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.onSurface,
                           fontWeight: FontWeight.bold,
                           fontSize: 15,
                         ),
@@ -679,8 +691,8 @@ class _TasksSliver extends StatelessWidget {
                       Expanded(
                         child: Text(
                           task.title,
-                          style: const TextStyle(
-                            color: AppColors.textPrimary,
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.onSurface,
                             fontSize: 14,
                           ),
                           maxLines: 1,

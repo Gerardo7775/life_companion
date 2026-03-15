@@ -37,7 +37,7 @@ class _TasksPageState extends State<TasksPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.bgDark,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -135,7 +135,7 @@ class _TasksPageState extends State<TasksPage>
       child: Container(
         padding: const EdgeInsets.all(4),
         decoration: BoxDecoration(
-          color: AppColors.bgCard,
+          color: Theme.of(context).cardTheme.color,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(color: AppColors.glassBorder),
         ),
@@ -217,10 +217,10 @@ class _TasksPageState extends State<TasksPage>
     showDialog(
       context: ctx,
       builder: (_) => AlertDialog(
-        backgroundColor: AppColors.bgCard,
-        title: const Text(
+        backgroundColor: Theme.of(context).cardTheme.color,
+        title: Text(
           'Eliminar tarea',
-          style: TextStyle(color: AppColors.textPrimary),
+          style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
         ),
         content: const Text(
           '¿Seguro que quieres eliminar esta tarea?',
@@ -256,7 +256,7 @@ class _TasksPageState extends State<TasksPage>
     showModalBottomSheet(
       context: ctx,
       isScrollControlled: true,
-      backgroundColor: AppColors.bgCard,
+      backgroundColor: Theme.of(context).cardTheme.color,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),

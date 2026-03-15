@@ -31,7 +31,7 @@ class _FinancesPageState extends State<FinancesPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.bgDark,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         child: BlocBuilder<FinanceBloc, FinanceState>(
           builder: (ctx, state) {
@@ -149,7 +149,7 @@ class _FinancesPageState extends State<FinancesPage> {
                         '${a.name}: ${_fmt.format(a.balance)}',
                         style: const TextStyle(fontSize: 11),
                       ),
-                      backgroundColor: AppColors.bgCardLight,
+                      backgroundColor: Theme.of(context).dividerColor.withValues(alpha: 0.1),
                     ),
                   ),
                 )
@@ -282,7 +282,7 @@ class _FinancesPageState extends State<FinancesPage> {
               borderRadius: BorderRadius.circular(4),
               child: LinearProgressIndicator(
                 value: budget.percentage,
-                backgroundColor: AppColors.bgCardLight,
+                backgroundColor: Theme.of(context).dividerColor.withValues(alpha: 0.1),
                 color: budget.isOverBudget ? AppColors.error : color,
                 minHeight: 6,
               ),
@@ -364,7 +364,7 @@ class _FinancesPageState extends State<FinancesPage> {
     showModalBottomSheet(
       context: ctx,
       isScrollControlled: true,
-      backgroundColor: AppColors.bgCard,
+      backgroundColor: Theme.of(context).cardTheme.color,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
@@ -429,10 +429,10 @@ class _FinancesPageState extends State<FinancesPage> {
                 controller: amountCtrl,
                 keyboardType: TextInputType.number,
                 autofocus: true,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
-                  color: AppColors.textPrimary,
+                  color: Theme.of(context).colorScheme.onSurface,
                 ),
                 decoration: const InputDecoration(
                   labelText: 'Monto *',
@@ -455,7 +455,7 @@ class _FinancesPageState extends State<FinancesPage> {
                         value: a.id,
                         child: Text(
                           a.name,
-                          style: const TextStyle(color: AppColors.textPrimary),
+                          style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
                         ),
                       ),
                     )
@@ -477,7 +477,7 @@ class _FinancesPageState extends State<FinancesPage> {
                         value: c.id,
                         child: Text(
                           c.name,
-                          style: const TextStyle(color: AppColors.textPrimary),
+                          style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
                         ),
                       ),
                     )

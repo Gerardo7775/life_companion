@@ -61,13 +61,13 @@ class _PomodoroView extends StatelessWidget {
         return SafePopScope(
           fallbackRoute: '/',
           child: Scaffold(
-            backgroundColor: AppColors.bgDark,
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           appBar: AppBar(
             backgroundColor: Colors.transparent,
             elevation: 0,
             leading: IconButton(
-              icon: const Icon(Icons.arrow_back_ios_rounded,
-                  color: AppColors.textPrimary),
+              icon: Icon(Icons.arrow_back_ios_rounded,
+                  color: Theme.of(context).colorScheme.onSurface),
               onPressed: () {
                 ctx.read<PomodoroBloc>().add(PomodoroPauseEvent());
                 if (context.canPop()) {
@@ -82,8 +82,8 @@ class _PomodoroView extends StatelessWidget {
               state.taskTitle != null
                   ? '📌 ${state.taskTitle}'
                   : '⏱️ Pomodoro',
-              style: const TextStyle(
-                  color: AppColors.textPrimary,
+              style: TextStyle(
+                  color: Theme.of(context).colorScheme.onSurface,
                   fontSize: 16,
                   fontWeight: FontWeight.w600),
               maxLines: 1,
@@ -334,7 +334,7 @@ class _Controls extends StatelessWidget {
   void _showStatsSheet(BuildContext context) {
     showModalBottomSheet(
       context: context,
-      backgroundColor: AppColors.bgCard,
+      backgroundColor: Theme.of(context).cardTheme.color,
       shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
       builder: (_) => Padding(
@@ -348,9 +348,9 @@ class _Controls extends StatelessWidget {
                 decoration: BoxDecoration(
                     color: AppColors.glassBorder,
                     borderRadius: BorderRadius.circular(2))),
-            const Text('Estadísticas de Hoy',
+            Text('Estadísticas de Hoy',
                 style: TextStyle(
-                    color: AppColors.textPrimary,
+                    color: Theme.of(context).colorScheme.onSurface,
                     fontSize: 18,
                     fontWeight: FontWeight.bold)),
             const SizedBox(height: 24),
@@ -401,7 +401,7 @@ class _CircleBtn extends StatelessWidget {
         width: size, height: size,
         decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: AppColors.bgCardLight,
+            color: Theme.of(context).dividerColor.withValues(alpha: 0.1),
             border: Border.all(color: AppColors.glassBorder)),
         child: Icon(icon, color: color, size: iconSize),
       ),

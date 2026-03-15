@@ -44,13 +44,13 @@ class _MoodCheckPageState extends State<MoodCheckPage> {
           context.go('/wellness');
         },
         child: Scaffold(
-          backgroundColor: AppColors.bgDark,
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           appBar: AppBar(
             backgroundColor: Colors.transparent,
             elevation: 0,
             leading: IconButton(
-              icon: const Icon(Icons.arrow_back_ios_rounded,
-                  color: AppColors.textPrimary),
+              icon: Icon(Icons.arrow_back_ios_rounded,
+                  color: Theme.of(context).colorScheme.onSurface),
               onPressed: () {
                 if (context.canPop()) {
                   context.pop();
@@ -59,9 +59,9 @@ class _MoodCheckPageState extends State<MoodCheckPage> {
                 }
               },
             ),
-            title: const Text('¿Cómo te sientes?',
+            title: Text('¿Cómo te sientes?',
                 style: TextStyle(
-                    color: AppColors.textPrimary, fontWeight: FontWeight.bold)),
+                    color: Theme.of(context).colorScheme.onSurface, fontWeight: FontWeight.bold)),
           ),
           body: SafeArea(
             child: SingleChildScrollView(
@@ -83,8 +83,8 @@ class _MoodCheckPageState extends State<MoodCheckPage> {
                   const SizedBox(height: 8),
                   Center(
                     child: Text(selected.$3,
-                        style: const TextStyle(
-                            color: AppColors.textPrimary,
+                        style: TextStyle(
+                            color: Theme.of(context).colorScheme.onSurface,
                             fontSize: 20,
                             fontWeight: FontWeight.bold)),
                   ),
@@ -125,9 +125,9 @@ class _MoodCheckPageState extends State<MoodCheckPage> {
                   const SizedBox(height: 28),
 
                   // ── Etiquetas ────────────────────────────────────────────────
-                  const Text('¿Cómo la describes?',
+                  Text('¿Cómo la describes?',
                       style: TextStyle(
-                          color: AppColors.textPrimary,
+                          color: Theme.of(context).colorScheme.onSurface,
                           fontWeight: FontWeight.bold,
                           fontSize: 16)),
                   const SizedBox(height: 12),
@@ -171,16 +171,16 @@ class _MoodCheckPageState extends State<MoodCheckPage> {
                   const SizedBox(height: 24),
 
                   // ── Nota libre ───────────────────────────────────────────────
-                  const Text('Nota (opcional)',
+                  Text('Nota (opcional)',
                       style: TextStyle(
-                          color: AppColors.textPrimary,
+                          color: Theme.of(context).colorScheme.onSurface,
                           fontWeight: FontWeight.bold,
                           fontSize: 16)),
                   const SizedBox(height: 8),
                   TextField(
                     controller: _noteCtrl,
                     maxLines: 3,
-                    style: const TextStyle(color: AppColors.textPrimary),
+                    style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
                     decoration: const InputDecoration(
                       hintText: '¿Qué está pasando por tu mente?',
                       alignLabelWithHint: true,

@@ -66,13 +66,13 @@ class _RoutinePageState extends State<RoutinePage> {
       child: Stack(
         children: [
           Scaffold(
-          backgroundColor: AppColors.bgDark,
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           appBar: AppBar(
             backgroundColor: Colors.transparent,
             elevation: 0,
             leading: IconButton(
-              icon: const Icon(Icons.arrow_back_ios_rounded,
-                  color: AppColors.textPrimary),
+              icon: Icon(Icons.arrow_back_ios_rounded,
+                  color: Theme.of(context).colorScheme.onSurface),
               onPressed: () {
                 if (context.canPop()) {
                   context.pop();
@@ -83,8 +83,8 @@ class _RoutinePageState extends State<RoutinePage> {
             ),
             title: Text(
               _title,
-              style: const TextStyle(
-                  color: AppColors.textPrimary,
+              style: TextStyle(
+                  color: Theme.of(context).colorScheme.onSurface,
                   fontSize: 18,
                   fontWeight: FontWeight.w600),
             ),
@@ -157,7 +157,7 @@ class _RoutinePageState extends State<RoutinePage> {
                               borderRadius: BorderRadius.circular(6),
                               child: LinearProgressIndicator(
                                 value: progress,
-                                backgroundColor: AppColors.bgCardLight,
+                                backgroundColor: Theme.of(context).dividerColor.withValues(alpha: 0.1),
                                 valueColor: AlwaysStoppedAnimation(_themeColor),
                                 minHeight: 10,
                               ),
@@ -320,8 +320,8 @@ class _EmptyRoutine extends StatelessWidget {
                 color: color, size: 56),
             const SizedBox(height: 20),
             Text('Sin hábitos de $label',
-                style: const TextStyle(
-                    color: AppColors.textPrimary, fontSize: 18, fontWeight: FontWeight.bold)),
+                style: TextStyle(
+                    color: Theme.of(context).colorScheme.onSurface, fontSize: 18, fontWeight: FontWeight.bold)),
             const SizedBox(height: 8),
             Text(
                 'Ve a Hábitos y asigna el horario "$type" a los hábitos que quieras incluir en esta rutina.',

@@ -28,7 +28,7 @@ class _WellnessPageState extends State<WellnessPage> {
     return SafePopScope(
       fallbackRoute: '/',
       child: Scaffold(
-        backgroundColor: AppColors.bgDark,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         body: SafeArea(
           child: BlocBuilder<WellnessBloc, WellnessState>(
             builder: (ctx, state) {
@@ -153,13 +153,23 @@ class _Header extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          colors: [Color(0xFF1A0533), Color(0xFF0D1B38)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
+      decoration: BoxDecoration(
+        gradient: isDark 
+          ? const LinearGradient(
+              colors: [Color(0xFF1A0533), Color(0xFF0D1B38)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            )
+          : LinearGradient(
+              colors: [
+                Theme.of(context).primaryColor.withValues(alpha: 0.1),
+                Theme.of(context).primaryColor.withValues(alpha: 0.02),
+              ],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
       ),
       padding: const EdgeInsets.fromLTRB(20, 28, 20, 24),
       child: Column(
@@ -168,8 +178,8 @@ class _Header extends StatelessWidget {
           Row(
             children: [
               IconButton(
-                icon: const Icon(Icons.arrow_back_ios_rounded,
-                    color: AppColors.textPrimary, size: 20),
+                icon: Icon(Icons.arrow_back_ios_rounded,
+                    color: Theme.of(context).colorScheme.onSurface, size: 20),
                 onPressed: () {
                   if (context.canPop()) {
                     context.pop();
@@ -179,9 +189,9 @@ class _Header extends StatelessWidget {
                 },
               ),
               const SizedBox(width: 8),
-              const Text('Bienestar 🧘',
+              Text('Bienestar 🧘',
                   style: TextStyle(
-                      color: AppColors.textPrimary,
+                      color: Theme.of(context).colorScheme.onSurface,
                       fontSize: 24,
                       fontWeight: FontWeight.bold)),
             ],
@@ -207,8 +217,8 @@ class _Header extends StatelessWidget {
                           todayMood != null
                               ? '¿Cómo te sientes ahora?'
                               : '¿Cómo te sientes hoy?',
-                          style: const TextStyle(
-                              color: AppColors.textPrimary,
+                          style: TextStyle(
+                              color: Theme.of(context).colorScheme.onSurface,
                               fontWeight: FontWeight.bold,
                               fontSize: 16),
                         ),
@@ -378,8 +388,8 @@ class _JournalTile extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(entry.title,
-                    style: const TextStyle(
-                        color: AppColors.textPrimary,
+                    style: TextStyle(
+                        color: Theme.of(context).colorScheme.onSurface,
                         fontWeight: FontWeight.w600)),
                 const SizedBox(height: 3),
                 Text(entry.content,

@@ -76,12 +76,12 @@ class _InsightsPageState extends State<InsightsPage> {
     return SafePopScope(
       fallbackRoute: '/',
       child: Scaffold(
-        backgroundColor: AppColors.bgDark,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_rounded, color: AppColors.textPrimary),
+          icon: Icon(Icons.arrow_back_ios_rounded, color: Theme.of(context).colorScheme.onSurface),
           onPressed: () {
             if (context.canPop()) {
               context.pop();
@@ -90,15 +90,15 @@ class _InsightsPageState extends State<InsightsPage> {
             }
           },
         ),
-        title: const Text(
+        title: Text(
           'Hub de Estadísticas',
-          style: TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.bold),
+          style: TextStyle(color: Theme.of(context).colorScheme.onSurface, fontWeight: FontWeight.bold),
         ),
       ),
       body: RefreshIndicator(
         onRefresh: _loadDigitalWellbeing,
         color: AppColors.primary,
-        backgroundColor: AppColors.bgCard,
+        backgroundColor: Theme.of(context).cardTheme.color,
         child: ListView(
           padding: const EdgeInsets.all(20),
           children: [
@@ -154,7 +154,7 @@ class _InsightsPageState extends State<InsightsPage> {
                 borderRadius: BorderRadius.circular(8),
                 child: LinearProgressIndicator(
                   value: progress,
-                  backgroundColor: AppColors.bgCardLight,
+                  backgroundColor: Theme.of(context).dividerColor.withValues(alpha: 0.1),
                   valueColor: const AlwaysStoppedAnimation(AppColors.catTasks),
                   minHeight: 12,
                 ),
@@ -388,9 +388,9 @@ class _InsightsPageState extends State<InsightsPage> {
             crossAxisAlignment: CrossAxisAlignment.baseline,
             textBaseline: TextBaseline.alphabetic,
             children: [
-              Text('$hours', style: const TextStyle(fontSize: 48, fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
+              Text('$hours', style: TextStyle(fontSize: 48, fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.onSurface)),
               const Text('h ', style: TextStyle(fontSize: 20, color: AppColors.textSecondary)),
-              Text('$minutes', style: const TextStyle(fontSize: 48, fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
+              Text('$minutes', style: TextStyle(fontSize: 48, fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.onSurface)),
               const Text('m', style: TextStyle(fontSize: 20, color: AppColors.textSecondary)),
             ],
           ),
@@ -401,7 +401,7 @@ class _InsightsPageState extends State<InsightsPage> {
   void _showAppDetails(BuildContext context, AppUsageInfo app) {
     showModalBottomSheet(
       context: context,
-      backgroundColor: AppColors.bgCard,
+      backgroundColor: Theme.of(context).cardTheme.color,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
@@ -438,8 +438,8 @@ class _InsightsPageState extends State<InsightsPage> {
                   Expanded(
                     child: Text(
                       name,
-                      style: const TextStyle(
-                          color: AppColors.textPrimary,
+                      style: TextStyle(
+                          color: Theme.of(context).colorScheme.onSurface,
                           fontSize: 20,
                           fontWeight: FontWeight.bold),
                       overflow: TextOverflow.ellipsis,

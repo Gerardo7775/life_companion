@@ -99,12 +99,12 @@ class _JournalEntryPageState extends State<JournalEntryPage> {
           context.go('/wellness/journal');
         },
         child: Scaffold(
-          backgroundColor: AppColors.bgDark,
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           appBar: AppBar(
             backgroundColor: Colors.transparent,
             elevation: 0,
             leading: IconButton(
-              icon: const Icon(Icons.close_rounded, color: AppColors.textPrimary),
+              icon: Icon(Icons.close_rounded, color: Theme.of(context).colorScheme.onSurface),
               onPressed: () {
                 if (context.canPop()) {
                   context.pop();
@@ -115,8 +115,8 @@ class _JournalEntryPageState extends State<JournalEntryPage> {
             ),
             title: Text(
               _isEditing ? 'Editar entrada' : 'Nueva entrada',
-              style: const TextStyle(
-                  color: AppColors.textPrimary, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                  color: Theme.of(context).colorScheme.onSurface, fontWeight: FontWeight.bold),
             ),
             actions: [
               TextButton.icon(
@@ -160,8 +160,8 @@ class _JournalEntryPageState extends State<JournalEntryPage> {
                                         fontSize: 12)),
                                 const SizedBox(height: 2),
                                 Text(_currentPrompt,
-                                    style: const TextStyle(
-                                        color: AppColors.textPrimary,
+                                    style: TextStyle(
+                                        color: Theme.of(context).colorScheme.onSurface,
                                         fontSize: 14)),
                               ],
                             ),
@@ -173,8 +173,8 @@ class _JournalEntryPageState extends State<JournalEntryPage> {
                   // Título
                   TextField(
                     controller: _titleCtrl,
-                    style: const TextStyle(
-                        color: AppColors.textPrimary,
+                    style: TextStyle(
+                        color: Theme.of(context).colorScheme.onSurface,
                         fontSize: 22,
                         fontWeight: FontWeight.bold),
                     decoration: InputDecoration(
@@ -200,8 +200,8 @@ class _JournalEntryPageState extends State<JournalEntryPage> {
                   // Contenido
                   TextField(
                     controller: _contentCtrl,
-                    style: const TextStyle(
-                        color: AppColors.textPrimary,
+                    style: TextStyle(
+                        color: Theme.of(context).colorScheme.onSurface,
                         fontSize: 16,
                         height: 1.6),
                     maxLines: null,
@@ -227,7 +227,7 @@ class _JournalEntryPageState extends State<JournalEntryPage> {
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                 decoration: BoxDecoration(
-                  color: AppColors.bgCard,
+                  color: Theme.of(context).cardTheme.color,
                   border: Border(
                       top: BorderSide(color: AppColors.glassBorder)),
                 ),
@@ -280,12 +280,12 @@ class _JournalEntryPageState extends State<JournalEntryPage> {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        backgroundColor: AppColors.bgCard,
-        title: const Text('Agregar etiqueta',
-            style: TextStyle(color: AppColors.textPrimary)),
+        backgroundColor: Theme.of(context).cardTheme.color,
+        title: Text('Agregar etiqueta',
+            style: TextStyle(color: Theme.of(context).colorScheme.onSurface)),
         content: TextField(
           controller: ctrl,
-          style: const TextStyle(color: AppColors.textPrimary),
+          style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
           autofocus: true,
           decoration: const InputDecoration(
             hintText: 'Ej. Ansiedad, Logro, Trabajo',

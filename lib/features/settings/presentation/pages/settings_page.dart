@@ -45,7 +45,7 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.bgDark,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         child: CustomScrollView(
           slivers: [
@@ -110,10 +110,14 @@ class _SettingsPageState extends State<SettingsPage> {
                                         icon: const Icon(Icons.arrow_drop_down_rounded),
                                         borderRadius: BorderRadius.circular(12),
                                         items: const [
-                                          DropdownMenuItem(value: 'auto',  child: Text('Automatico')),
+                                          DropdownMenuItem(value: 'auto',  child: Text('Automático')),
                                           DropdownMenuItem(value: 'light', child: Text('Claro')),
                                           DropdownMenuItem(value: 'dark',  child: Text('Oscuro')),
                                         ],
+                                        dropdownColor: Theme.of(context).cardTheme.color,
+                                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                          color: Theme.of(context).colorScheme.onSurface,
+                                        ),
                                         onChanged: (v) {
                                           if (v != null) cubit.changeTheme(v);
                                         },

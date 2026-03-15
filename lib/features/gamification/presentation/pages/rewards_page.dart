@@ -24,7 +24,7 @@ class _RewardsPageState extends State<RewardsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.bgDark,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         child: BlocConsumer<GamificationBloc, GamificationState>(
           listener: (ctx, state) {
@@ -211,7 +211,7 @@ class _RewardsPageState extends State<RewardsPage> {
             borderRadius: BorderRadius.circular(6),
             child: LinearProgressIndicator(
               value: stats.levelProgress,
-              backgroundColor: AppColors.bgCardLight,
+              backgroundColor: Theme.of(context).dividerColor.withValues(alpha: 0.1),
               valueColor: const AlwaysStoppedAnimation(AppColors.primary),
               minHeight: 10,
             ),
@@ -239,10 +239,10 @@ class _RewardsPageState extends State<RewardsPage> {
                 const SizedBox(height: 4),
                 Text(
                   '${stats.tasksCompleted}',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
-                    color: AppColors.textPrimary,
+                    color: Theme.of(context).colorScheme.onSurface,
                   ),
                 ),
                 const Text(
@@ -269,10 +269,10 @@ class _RewardsPageState extends State<RewardsPage> {
                 const SizedBox(height: 4),
                 Text(
                   '${stats.habitsCompleted}',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
-                    color: AppColors.textPrimary,
+                    color: Theme.of(context).colorScheme.onSurface,
                   ),
                 ),
                 const Text(
@@ -299,10 +299,10 @@ class _RewardsPageState extends State<RewardsPage> {
                 const SizedBox(height: 4),
                 Text(
                   '${stats.currentStreak}',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
-                    color: AppColors.textPrimary,
+                    color: Theme.of(context).colorScheme.onSurface,
                   ),
                 ),
                 const Text(

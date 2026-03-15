@@ -24,7 +24,7 @@ class _GoalsPageState extends State<GoalsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.bgDark,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         child: CustomScrollView(
           slivers: [
@@ -119,7 +119,7 @@ class _GoalsPageState extends State<GoalsPage> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: AppColors.bgCard,
+      backgroundColor: Theme.of(context).cardTheme.color,
       shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
       builder: (ctx) {
@@ -144,22 +144,22 @@ class _GoalsPageState extends State<GoalsPage> {
                             borderRadius: BorderRadius.circular(2))),
                   ),
                   const SizedBox(height: 16),
-                  const Text('Nueva Meta',
+                  Text('Nueva Meta',
                       style: TextStyle(
-                          color: AppColors.textPrimary,
+                          color: Theme.of(context).colorScheme.onSurface,
                           fontSize: 20,
                           fontWeight: FontWeight.bold)),
                   const SizedBox(height: 16),
                   TextField(
                     controller: titleCtrl,
-                    style: const TextStyle(color: AppColors.textPrimary),
+                    style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
                     decoration:
                         const InputDecoration(labelText: 'Título de la meta'),
                   ),
                   const SizedBox(height: 12),
                   TextField(
                     controller: descCtrl,
-                    style: const TextStyle(color: AppColors.textPrimary),
+                    style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
                     decoration: const InputDecoration(
                         labelText: 'Descripción (opcional)'),
                   ),
@@ -317,8 +317,8 @@ class _GoalCard extends StatelessWidget {
                     Expanded(
                       child: Text(
                         goal.title,
-                        style: const TextStyle(
-                            color: AppColors.textPrimary,
+                        style: TextStyle(
+                            color: Theme.of(context).colorScheme.onSurface,
                             fontWeight: FontWeight.bold,
                             fontSize: 16),
                       ),
@@ -360,7 +360,7 @@ class _GoalCard extends StatelessWidget {
                         borderRadius: BorderRadius.circular(4),
                         child: LinearProgressIndicator(
                           value: goal.progress,
-                          backgroundColor: AppColors.bgCardLight,
+                          backgroundColor: Theme.of(context).dividerColor.withValues(alpha: 0.1),
                           valueColor: AlwaysStoppedAnimation(_color),
                           minHeight: 7,
                         ),
@@ -389,7 +389,7 @@ class _GoalCard extends StatelessWidget {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: AppColors.bgCard,
+      backgroundColor: Theme.of(context).cardTheme.color,
       shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
       builder: (ctx) {
@@ -414,8 +414,8 @@ class _GoalCard extends StatelessWidget {
                       const SizedBox(width: 10),
                       Expanded(
                           child: Text(goal.title,
-                              style: const TextStyle(
-                                  color: AppColors.textPrimary,
+                              style: TextStyle(
+                                  color: Theme.of(context).colorScheme.onSurface,
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold))),
                       Text('${(goal.progress * 100).toStringAsFixed(0)}%',
@@ -469,8 +469,8 @@ class _GoalCard extends StatelessWidget {
                           Expanded(
                             child: TextField(
                               controller: titleCtrl,
-                              style: const TextStyle(
-                                  color: AppColors.textPrimary, fontSize: 14),
+                              style: TextStyle(
+                                  color: Theme.of(context).colorScheme.onSurface, fontSize: 14),
                               decoration: const InputDecoration(
                                   hintText: 'Agregar paso o tarea...',
                                   isDense: true),
@@ -526,9 +526,9 @@ class _EmptyGoals extends StatelessWidget {
                 color: AppColors.primary, size: 40),
           ),
           const SizedBox(height: 20),
-          const Text('Sin metas aún',
+          Text('Sin metas aún',
               style: TextStyle(
-                  color: AppColors.textPrimary,
+                  color: Theme.of(context).colorScheme.onSurface,
                   fontSize: 18,
                   fontWeight: FontWeight.bold)),
           const SizedBox(height: 8),
